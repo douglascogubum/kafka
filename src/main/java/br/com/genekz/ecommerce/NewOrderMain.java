@@ -1,14 +1,15 @@
 package br.com.genekz.ecommerce;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 public class NewOrderMain {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -20,7 +21,7 @@ public class NewOrderMain {
                 ex.printStackTrace();
                 return;
             }
-            System.out.println("Sucesso enviando " + data.topic() + ":::partition:" + data.partition() + " /offset: " + data.offset() + " /timestamp: " + data.timestamp());
+            log.info("Sucesso enviando " + data.topic() + ":::partition:" + data.partition() + " /offset: " + data.offset() + " /timestamp: " + data.timestamp());
         }).get();
     }
 
