@@ -15,14 +15,21 @@ public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var producer = new KafkaProducer<String, String> (properties());
         var value = "132123, 67523, 1234";
-        var record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER",value, value);
-        producer.send(record, (data, ex) -> {
-            if(ex != null) {
-                ex.printStackTrace();
-                return;
-            }
-            log.info("Sucesso enviando " + data.topic() + ":::partition:" + data.partition() + " /offset: " + data.offset() + " /timestamp: " + data.timestamp());
-        }).get();
+        var record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value);
+        try {
+            producer.send(record, (data, ex) -> {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    return;
+                }
+                log.info("Sucesso enviando " + data.topic() + ":::partition:" + data.partition() + " /offset: " + data.offset() + " /timestamp: " + data.timestamp());
+            }).get();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            producer.close();
+        }
     }
 
     private static Properties properties() {

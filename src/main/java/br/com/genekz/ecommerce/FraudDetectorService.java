@@ -12,29 +12,32 @@ import java.util.Properties;
 @Slf4j
 public class FraudDetectorService {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         var consumer = new KafkaConsumer<String, String>(properties());
         consumer.subscribe(Collections.singletonList("ECOMMERCE_NEW_ORDER"));
         while (true) {
-            var records = consumer.poll(Duration.ofMillis(100));
-            if (!records.isEmpty()) {
-                log.info("Encontrei " + records.count() + " registros");
-                for (var recods : records) {
-                    log.info("-----------------------------------------");
-                    log.info("Processing new order, checking for fraud");
-                    log.info(recods.key());
-                    log.info(recods.value());
-                    log.info(String.valueOf(recods.partition()));
-                    log.info(String.valueOf(recods.offset()));
+            try {
+                var records = consumer.poll(Duration.ofMillis(100));
+                if (!records.isEmpty()) {
+                    log.info("Encontrei " + records.count() + " registros");
+                    for (var recods : records) {
+                        log.info("-----------------------------------------");
+                        log.info("Processing new order, checking for fraud");
+                        log.info(recods.key());
+                        log.info(recods.value());
+                        log.info(String.valueOf(recods.partition()));
+                        log.info(String.valueOf(recods.offset()));
+                    }
                 }
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    log.error(e.getMessage());
-                    e.printStackTrace();
-                }
-                log.info("Order processed");
+                        Thread.sleep(5000);
+            } catch(InterruptedException e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+                throw e;
+            } finally{
+                consumer.close();
             }
+            log.info("Order processed");
         }
     }
 
