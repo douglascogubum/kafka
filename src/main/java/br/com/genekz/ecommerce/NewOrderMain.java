@@ -8,25 +8,29 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class NewOrderMain {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        var producer = new KafkaProducer<String, String> (properties());
-        var value = "132123, 67523, 1234";
-        var record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value);
-        var email = "Thank you for your order! We are processing your orde";
-        var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", email, email);
-        try {
-            producer.send(record, callback()).get();
-            producer.send(emailRecord, callback()).get();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            producer.close();
+        for( var i = 0; i < 100; i++) {
+            var producer = new KafkaProducer<String, String> (properties());
+            var key = UUID.randomUUID().toString();
+            var value = key + "132123, 67523, 1234";
+            var record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value);
+            var email = "Thank you for your order! We are processing your orde";
+            var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", email, email);
+            try {
+                producer.send(record, callback()).get();
+                producer.send(emailRecord, callback()).get();
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+            } finally {
+                producer.close();
+            }
         }
     }
 
@@ -45,6 +49,7 @@ public class NewOrderMain {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.CLIENT_ID_CONFIG, StringSerializer.class.getSimpleName() + "-" + UUID.randomUUID());
         return properties;
     }
 }
