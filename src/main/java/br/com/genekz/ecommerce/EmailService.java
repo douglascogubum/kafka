@@ -3,12 +3,14 @@ package br.com.genekz.ecommerce;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.util.HashMap;
+
 @Slf4j
 public class EmailService {
 
     public static void main(String[] args) throws InterruptedException {
         var emailService = new EmailService();
-        try (var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL", emailService::parse)) {
+        try (var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL", emailService::parse, String.class, new HashMap<String, String>())){
             service.run();
         }
     }

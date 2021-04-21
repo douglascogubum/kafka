@@ -1,23 +1,26 @@
 package br.com.genekz.ecommerce;
 
+import br.com.genekz.ecommerce.model.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+
+import java.util.HashMap;
 
 @Slf4j
 public class FraudDetectorService {
 
     public static void main(String[] args) throws InterruptedException {
         var fraudService = new FraudDetectorService();
-        try (var service = new KafkaService(FraudDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER", fraudService::parse)) {
+        try (var service = new KafkaService(FraudDetectorService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER", fraudService::parse, Order.class, new HashMap<String, String>())) {
             service.run();
         }
     }
 
-    private void parse(ConsumerRecord<String, String> record) throws InterruptedException {
+    private void parse(ConsumerRecord<String, Order> record) throws InterruptedException {
         log.info("-----------------------------------------");
         log.info("Processing new order, checking for fraud");
         log.info(record.key());
-        log.info(record.value());
+        log.info(String.valueOf(record.value()));
         log.info(String.valueOf(record.partition()));
         log.info(String.valueOf(record.offset()));
         try {
