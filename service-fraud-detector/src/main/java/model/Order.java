@@ -1,4 +1,4 @@
-package br.com.genekz.ecommerce.model;
+package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

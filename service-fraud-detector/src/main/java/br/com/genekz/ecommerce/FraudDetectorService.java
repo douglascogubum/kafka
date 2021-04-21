@@ -1,7 +1,8 @@
 package br.com.genekz.ecommerce;
 
-import br.com.genekz.ecommerce.model.Order;
+
 import lombok.extern.slf4j.Slf4j;
+import model.Order;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.HashMap;
