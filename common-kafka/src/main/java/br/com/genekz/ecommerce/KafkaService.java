@@ -18,7 +18,6 @@ class KafkaService<T> implements Closeable {
 
     private final KafkaConsumer<String, T> consumer;
     private final ConsumerFunction parse;
-    private final Class<T> type;
 
     KafkaService(String groupName, String topic, ConsumerFunction parse, Class<T> type, Map<String, String> properties) {
         this(parse, groupName, type, properties);
@@ -32,7 +31,6 @@ class KafkaService<T> implements Closeable {
 
     private KafkaService(ConsumerFunction parse, String groupName, Class<T> type, Map<String, String> properties) {
         this.parse = parse;
-        this.type = type;
         this.consumer = new KafkaConsumer<String, T>(getProperties(type, groupName, properties));
     }
 
