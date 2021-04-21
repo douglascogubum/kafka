@@ -31,7 +31,7 @@ class KafkaService<T> implements Closeable {
 
     private KafkaService(ConsumerFunction parse, String groupName, Class<T> type, Map<String, String> properties) {
         this.parse = parse;
-        this.consumer = new KafkaConsumer<String, T>(getProperties(type, groupName, properties));
+        this.consumer = new KafkaConsumer<>(getProperties(type, groupName, properties));
     }
 
     public void run() throws InterruptedException {
