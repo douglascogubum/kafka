@@ -1,4 +1,4 @@
-package br.com.genekz.ecommerce;
+package br.com.genekz.ecommerce.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;

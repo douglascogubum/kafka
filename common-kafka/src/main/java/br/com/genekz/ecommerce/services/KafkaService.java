@@ -1,4 +1,4 @@
-package br.com.genekz.ecommerce;
+package br.com.genekz.ecommerce.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -34,13 +34,18 @@ class KafkaService<T> implements Closeable {
         this.consumer = new KafkaConsumer<>(getProperties(type, groupName, properties));
     }
 
-    public void run() throws InterruptedException {
+    public void run() {
         while (true) {
             var records = consumer.poll(Duration.ofMillis(100));
             if (!records.isEmpty()) {
                 log.info("Encontrei " + records.count() + " registros");
                 for (var record : records) {
-                    parse.consume(record);
+                    try {
+                        parse.consume(record);
+                    } catch (Exception e) {
+                        log.info("Occurred Exception");
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-package br.com.genekz.ecommerce;
+package br.com.genekz.ecommerce.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
