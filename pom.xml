@@ -15,6 +15,7 @@
         <module>service-new-order</module>
         <module>common-kafka</module>
         <module>service-users</module>
+        <module>service-http-ecommerce</module>
     </modules>
 
     <properties>
@@ -31,7 +32,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
+            <version>1.8.0-beta2</version>
         </dependency>
 
         <dependency>
