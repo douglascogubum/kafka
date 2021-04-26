@@ -1,21 +1,21 @@
 package br.com.genekz.ecommerce.services;
 
+import br.com.genekz.ecommerce.model.CorrelationId;
+import br.com.genekz.ecommerce.model.Message;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.Closeable;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Slf4j
 class KafkaDispatcher<T> implements Closeable {
 
-    private final KafkaProducer<String, T> producer;
+    private final KafkaProducer<String, Message<T>> producer;
 
     KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
@@ -31,9 +31,16 @@ class KafkaDispatcher<T> implements Closeable {
         return properties;
     }
 
-    public void send(String topic, String key, T value) throws ExecutionException, InterruptedException {
+    public void send(String topic, String key, CorrelationId id, T payload) throws ExecutionException, InterruptedException {
+        Future<RecordMetadata> future = sendAsync(topic, key, id, payload);
+        future.get();
+    }
+
+    protected Future<RecordMetadata> sendAsync(String topic, String key, CorrelationId id, T payload) {
+        var value = new Message<>(id, payload);
         var record = new ProducerRecord<>(topic, key, value);
-        producer.send(record, callback()).get();
+        var future = producer.send(record, callback());
+        return future;
     }
 
     private static Callback callback() {

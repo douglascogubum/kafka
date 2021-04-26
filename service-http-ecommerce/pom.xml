@@ -21,11 +21,6 @@
             <artifactId>common-kafka</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.8.0-beta2</version>
-        </dependency>
     </dependencies>
 
     <properties>

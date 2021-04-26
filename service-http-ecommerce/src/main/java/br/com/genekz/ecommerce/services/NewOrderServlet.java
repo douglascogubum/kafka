@@ -1,5 +1,6 @@
 package br.com.genekz.ecommerce.services;
 
+import br.com.genekz.ecommerce.model.CorrelationId;
 import br.com.genekz.ecommerce.model.Order;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -33,19 +34,17 @@ public class NewOrderServlet extends HttpServlet {
 
             var orderId = UUID.randomUUID().toString();
             var order = new Order(orderId, amount, email);
-            orderDispatcher.send("ECOMMERCE_NEW_ORDER", email, order);
+            orderDispatcher.send("ECOMMERCE_NEW_ORDER", email, new CorrelationId(NewOrderServlet.class.getSimpleName()), order);
 
             var emailCode = "Thank you for your order! We are processing your order";
-            emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, emailCode);
+            emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, new CorrelationId(NewOrderServlet.class.getSimpleName()), emailCode);
 
             log.info("New order sent successfully.");
 
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println("New order sent");
 
-        } catch (ExecutionException e) {
-            throw new ServletException(e);
-        } catch (InterruptedException e) {
+        } catch (ExecutionException|InterruptedException e) {
             throw new ServletException(e);
         }
     }
