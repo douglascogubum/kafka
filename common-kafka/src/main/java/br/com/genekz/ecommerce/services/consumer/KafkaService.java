@@ -1,6 +1,8 @@
-package br.com.genekz.ecommerce.services;
+package br.com.genekz.ecommerce.services.consumer;
 
 import br.com.genekz.ecommerce.model.Message;
+import br.com.genekz.ecommerce.services.dispatcher.GsonDeserializer;
+import br.com.genekz.ecommerce.services.dispatcher.KafkaDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -16,17 +18,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 @Slf4j
-class KafkaService<T> implements Closeable {
+public class KafkaService<T> implements Closeable {
 
     private final KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction parse;
 
-    KafkaService(String groupName, String topic, ConsumerFunction<T> parse, Map<String, String> properties) {
+    public KafkaService(String groupName, String topic, ConsumerFunction<T> parse, Map<String, String> properties) {
         this(parse, groupName, properties);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    KafkaService(String groupName, Pattern topic, ConsumerFunction<T> parse, Map<String, String> properties) {
+    public KafkaService(String groupName, Pattern topic, ConsumerFunction<T> parse, Map<String, String> properties) {
         this(parse, groupName, properties);
         consumer.subscribe(topic);
     }

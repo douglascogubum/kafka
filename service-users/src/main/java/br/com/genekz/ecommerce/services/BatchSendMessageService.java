@@ -2,6 +2,8 @@ package br.com.genekz.ecommerce.services;
 
 import br.com.genekz.ecommerce.model.Message;
 import br.com.genekz.ecommerce.model.User;
+import br.com.genekz.ecommerce.services.consumer.KafkaService;
+import br.com.genekz.ecommerce.services.dispatcher.KafkaDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

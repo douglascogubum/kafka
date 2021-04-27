@@ -1,4 +1,4 @@
-package br.com.genekz.ecommerce.services;
+package br.com.genekz.ecommerce.services.dispatcher;
 
 import br.com.genekz.ecommerce.model.Message;
 import br.com.genekz.ecommerce.model.MessageAdapter;

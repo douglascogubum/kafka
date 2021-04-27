@@ -1,7 +1,8 @@
-package br.com.genekz.ecommerce.services;
+package br.com.genekz.ecommerce.services.dispatcher;
 
 import br.com.genekz.ecommerce.model.CorrelationId;
 import br.com.genekz.ecommerce.model.Message;
+import br.com.genekz.ecommerce.services.consumer.GsonSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -13,11 +14,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Slf4j
-class KafkaDispatcher<T> implements Closeable {
+public class KafkaDispatcher<T> implements Closeable {
 
     private final KafkaProducer<String, Message<T>> producer;
 
-    KafkaDispatcher() {
+    public KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
     }
 
@@ -36,8 +37,8 @@ class KafkaDispatcher<T> implements Closeable {
         future.get();
     }
 
-    protected Future<RecordMetadata> sendAsync(String topic, String key, CorrelationId id, T payload) {
-        var value = new Message<>(id, payload);
+    public Future<RecordMetadata> sendAsync(String topic, String key, CorrelationId id, T payload) {
+        var value = new Message<>(id.continueWith("_" + topic), payload);
         var record = new ProducerRecord<>(topic, key, value);
         var future = producer.send(record, callback());
         return future;

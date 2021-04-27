@@ -1,6 +1,7 @@
 package br.com.genekz.ecommerce.services;
 
 import br.com.genekz.ecommerce.model.CorrelationId;
+import br.com.genekz.ecommerce.services.dispatcher.KafkaDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
