@@ -1,24 +1,32 @@
 package br.com.genekz.ecommerce.services;
 
 import br.com.genekz.ecommerce.model.Message;
-import br.com.genekz.ecommerce.services.consumer.KafkaService;
+import br.com.genekz.ecommerce.services.consumer.ConsumerService;
+import br.com.genekz.ecommerce.services.consumer.ServiceRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-
 @Slf4j
-public class EmailService {
+public class EmailService implements ConsumerService<String> {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-        var emailService = new EmailService();
-        try (var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL", emailService::parse, new HashMap<String, String>())){
-            service.run();
-        }
+    private static final int THREADS = 1;
+
+    public static void main(String[] args) {
+        new ServiceRunner(EmailService::new).start(THREADS);
     }
 
-    private void parse(ConsumerRecord<String, Message<String>> record) throws InterruptedException {
+    @Override
+    public String getConsumerGroup(){
+        return EmailService.class.getSimpleName();
+    }
+
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_SEND_EMAIL";
+    }
+
+    @Override
+    public void parse(ConsumerRecord<String, Message<String>> record) {
         log.info("-----------------------------------------");
         log.info("Send email");
         log.info(record.key());
@@ -30,7 +38,6 @@ public class EmailService {
         } catch(InterruptedException e) {
             log.error(e.getMessage());
             e.printStackTrace();
-            throw e;
         }
     }
 }
